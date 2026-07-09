@@ -237,16 +237,16 @@ final class ConnectionWindowController: NSWindowController, NSTableViewDataSourc
     }
 
     private func configureFieldPlaceholders() {
-        nameField.placeholderString = "SEM COM AR"
-        sshUserField.placeholderString = "juanma"
+        nameField.placeholderString = "Example Tunnel"
+        sshUserField.placeholderString = "ssh-user"
         passwordField.placeholderString = L10n.tr("connection.password.placeholder.certificate")
-        hostField.placeholderString = "gaia.tecnologica.ar"
+        hostField.placeholderString = "server.example.com"
         sshPortField.placeholderString = "22"
-        containerField.placeholderString = "sem-com-ar"
-        networkField.placeholderString = "reverse-proxy"
+        containerField.placeholderString = "app-container"
+        networkField.placeholderString = "docker-network"
         remotePortField.placeholderString = "5432"
         bindAddressField.placeholderString = "127.0.0.1"
-        localPortField.placeholderString = "25432"
+        localPortField.placeholderString = "15432"
     }
 
     private func populateFields(with connection: BridgeConnection) {

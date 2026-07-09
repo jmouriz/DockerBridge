@@ -69,22 +69,22 @@ struct BridgeConnection: Codable, Identifiable, Equatable {
         self.container = try container.decodeIfPresent(String.self, forKey: .container) ?? ""
         network = try container.decodeIfPresent(String.self, forKey: .network) ?? ""
         bindAddress = try container.decodeIfPresent(String.self, forKey: .bindAddress) ?? "127.0.0.1"
-        localPort = try container.decodeIfPresent(Int.self, forKey: .localPort) ?? 25432
+        localPort = try container.decodeIfPresent(Int.self, forKey: .localPort) ?? 15432
         createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? now
         updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? createdAt
     }
 
     static func defaultConnection() -> BridgeConnection {
         BridgeConnection(
-            name: "SEM COM AR",
-            sshUser: "juanma",
-            host: "gaia.tecnologica.ar",
+            name: "Example Tunnel",
+            sshUser: "ssh-user",
+            host: "server.example.com",
             sshPort: 22,
             remotePort: 5432,
-            container: "sem-com-ar",
-            network: "reverse-proxy",
+            container: "app-container",
+            network: "docker-network",
             bindAddress: "127.0.0.1",
-            localPort: 25432
+            localPort: 15432
         )
     }
 

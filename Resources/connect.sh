@@ -2,17 +2,14 @@
 
 set -e
 
-SSH_USER=juanma
-HOST=gaia.tecnologica.ar
+SSH_USER=ssh-user
+HOST=server.example.com
 SSH_PORT=22
 PORT=5432
-CONTAINER=sem-com-ar
-#CONTAINER=development-tecnologica-ar
-NETWORK=reverse-proxy
-#NETWORK=web-proxy
+CONTAINER=app-container
+NETWORK=docker-network
 LOCALHOST=127.0.0.1
-LOCALPORT=25432
-#LOCALPORT=15432
+LOCALPORT=15432
 LOG_FILE="${LOG_FILE:-/tmp/connect.log}"
 SSH_OPTIONS=()
 
