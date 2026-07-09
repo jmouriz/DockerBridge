@@ -69,7 +69,6 @@ final class SettingsWindowController: NSWindowController {
         ])
 
         root.addArrangedSubview(row("settings.language", languagePopup))
-        languagePopup.widthAnchor.constraint(equalToConstant: 220).isActive = true
         languagePopup.target = self
         languagePopup.action = #selector(changeLanguage(_:))
 
@@ -139,6 +138,8 @@ final class SettingsWindowController: NSWindowController {
         labelView.widthAnchor.constraint(equalToConstant: 140).isActive = true
         fieldLabels[labelKey] = labelView
         control.heightAnchor.constraint(equalToConstant: 26).isActive = true
+        control.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        control.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
         var views: [NSView] = [labelView, control]
         views.append(contentsOf: trailing)
