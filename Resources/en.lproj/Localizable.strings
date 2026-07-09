@@ -1,0 +1,96 @@
+"language.system" = "System Default";
+"language.english" = "English";
+"language.spanish" = "Spanish";
+
+"common.cancel" = "Cancel";
+"common.save" = "Save";
+"common.choose" = "Choose...";
+"common.status" = "Status";
+
+"state.stopped" = "Stopped";
+"state.starting" = "Starting";
+"state.running" = "Running";
+"state.stopping" = "Stopping";
+"state.failed" = "Error";
+
+"menu.connections" = "Connections";
+"menu.noConnections" = "No saved connections";
+"menu.openManager" = "Open Manager...";
+"menu.addConnection" = "Add Connection...";
+"menu.settings" = "Settings...";
+"menu.help" = "Help...";
+"menu.stopAll" = "Stop All";
+"menu.quit" = "Quit";
+"menu.tooltip.active.one" = "%@ - 1 active connection";
+"menu.tooltip.active.many" = "%@ - %d active connections";
+
+"connection.table.name" = "Connection";
+"connection.table.status" = "Status";
+"connection.form.name" = "Name";
+"connection.form.sshUser" = "SSH User";
+"connection.form.password" = "SSH Password";
+"connection.form.host" = "SSH Host";
+"connection.form.sshPort" = "SSH Port";
+"connection.form.container" = "Container";
+"connection.form.network" = "Docker Network";
+"connection.form.remotePort" = "Remote Port";
+"connection.form.localIP" = "Local IP";
+"connection.form.localPort" = "Local Port";
+"connection.button.new" = "New";
+"connection.button.delete" = "Delete";
+"connection.button.start" = "Start";
+"connection.button.stop" = "Stop";
+"connection.button.openLog" = "Open Log";
+"connection.password.placeholder.certificate" = "certificates";
+"connection.password.placeholder.saved" = "saved in Keychain";
+"connection.status.unsaved" = "Status: Not Saved";
+"connection.status.format" = "Status: %@";
+"connection.status.tooltip" = "Status: %@";
+"connection.detail.unsaved" = "Save the connection to make it available from the menu bar.";
+"connection.defaultNewName" = "New Connection";
+"connection.alert.noLog" = "There is no log for this connection yet.";
+"connection.alert.nameRequired" = "Name is required.";
+"connection.alert.sshRequired" = "SSH user and host are required.";
+"connection.alert.dockerRequired" = "Container and Docker network are required.";
+"connection.alert.invalidPorts" = "Ports must be between 1 and 65535.";
+"connection.alert.passwordSaveFailed" = "Could not save the password in Keychain.";
+
+"settings.title" = "Settings";
+"settings.language" = "Language";
+"settings.language.tooltip" = "Choose the application language";
+"settings.logLocation" = "Log Location";
+"settings.connectScript" = "connect.sh Script";
+"settings.useBundledScript" = "Use Included";
+"settings.timeout" = "SSH Timeout (s)";
+"settings.keepAlive" = "KeepAlive (s)";
+"settings.keepAliveAttempts" = "KeepAlive Attempts";
+"settings.launchAgent" = "Launch Agent";
+"settings.launchAgent.enabled" = "Enabled";
+"settings.launchAgent.disabled" = "Disabled";
+"settings.launchAgent.enable" = "Enable";
+"settings.launchAgent.disable" = "Disable";
+"settings.launchAgent.legend" = "The launch agent opens DockerBridge when you log in.";
+"settings.launchAgent.enableTooltip" = "Open DockerBridge when you log in";
+"settings.launchAgent.disableTooltip" = "Do not open DockerBridge when you log in";
+"settings.launchAgent.enabledAccessibility" = "Launch agent enabled";
+"settings.launchAgent.disabledAccessibility" = "Launch agent disabled";
+"settings.alert.invalidTimeouts" = "Time values must be numeric.";
+"settings.alert.unreadableScript" = "Could not read the selected connect.sh script.";
+"settings.alert.launchAgentUpdateFailed" = "Could not update the launch agent: %@";
+
+"quit.title" = "Quit %@?";
+"quit.button.quit" = "Quit";
+"quit.disableLaunchAgent" = "Do not open %@ when logging in";
+"quit.activeConnection.one" = "There is 1 active connection. Quitting will close the tunnel.";
+"quit.activeConnection.many" = "There are %d active connections. Quitting will close the tunnels.";
+"quit.launchAgentConfigured" = "%@ is configured to open when you log in.";
+"quit.uninstallError.title" = "Could not uninstall the launch agent";
+
+"help.title" = "Help - %@";
+"help.overviewAlt" = "DockerBridge network overview";
+"help.missingOverview" = "overview.svg was not found inside the application bundle.";
+
+"tunnel.error.scriptNotFound" = "%@ was not found.";
+"tunnel.error.couldNotStart" = "Could not start: %@";
+"tunnel.error.askpass" = "Could not prepare SSH_ASKPASS: %@";
+"tunnel.error.processExited" = "The process exited with code %d.";

@@ -1,0 +1,96 @@
+"language.system" = "Sistema";
+"language.english" = "Inglés";
+"language.spanish" = "Español";
+
+"common.cancel" = "Cancelar";
+"common.save" = "Guardar";
+"common.choose" = "Elegir...";
+"common.status" = "Estado";
+
+"state.stopped" = "Detenido";
+"state.starting" = "Iniciando";
+"state.running" = "Activo";
+"state.stopping" = "Deteniendo";
+"state.failed" = "Error";
+
+"menu.connections" = "Conexiones";
+"menu.noConnections" = "Sin conexiones guardadas";
+"menu.openManager" = "Abrir administrador...";
+"menu.addConnection" = "Agregar conexión...";
+"menu.settings" = "Configuración...";
+"menu.help" = "Ayuda...";
+"menu.stopAll" = "Detener todas";
+"menu.quit" = "Salir";
+"menu.tooltip.active.one" = "%@ - 1 conexión activa";
+"menu.tooltip.active.many" = "%@ - %d conexiones activas";
+
+"connection.table.name" = "Conexión";
+"connection.table.status" = "Estado";
+"connection.form.name" = "Nombre";
+"connection.form.sshUser" = "Usuario SSH";
+"connection.form.password" = "Contraseña SSH";
+"connection.form.host" = "host SSH";
+"connection.form.sshPort" = "Puerto SSH";
+"connection.form.container" = "Contenedor";
+"connection.form.network" = "Red Docker";
+"connection.form.remotePort" = "Puerto remoto";
+"connection.form.localIP" = "IP local";
+"connection.form.localPort" = "Puerto local";
+"connection.button.new" = "Nueva";
+"connection.button.delete" = "Eliminar";
+"connection.button.start" = "Iniciar";
+"connection.button.stop" = "Detener";
+"connection.button.openLog" = "Abrir log";
+"connection.password.placeholder.certificate" = "certificados";
+"connection.password.placeholder.saved" = "guardada en Keychain";
+"connection.status.unsaved" = "Estado: Sin guardar";
+"connection.status.format" = "Estado: %@";
+"connection.status.tooltip" = "Estado: %@";
+"connection.detail.unsaved" = "Guarda la conexión para dejarla disponible en la barra de menús.";
+"connection.defaultNewName" = "Nueva conexión";
+"connection.alert.noLog" = "Todavía no hay log para esta conexión.";
+"connection.alert.nameRequired" = "El nombre es obligatorio.";
+"connection.alert.sshRequired" = "Usuario y host SSH son obligatorios.";
+"connection.alert.dockerRequired" = "Contenedor y red Docker son obligatorios.";
+"connection.alert.invalidPorts" = "Los puertos deben estar entre 1 y 65535.";
+"connection.alert.passwordSaveFailed" = "No se pudo guardar la contraseña en Keychain.";
+
+"settings.title" = "Configuración";
+"settings.language" = "Idioma";
+"settings.language.tooltip" = "Elegí el idioma de la aplicación";
+"settings.logLocation" = "Ubicación del log";
+"settings.connectScript" = "Script connect.sh";
+"settings.useBundledScript" = "Usar incluido";
+"settings.timeout" = "Timeout SSH (s)";
+"settings.keepAlive" = "KeepAlive (s)";
+"settings.keepAliveAttempts" = "KeepAlive intentos";
+"settings.launchAgent" = "Agente de inicio";
+"settings.launchAgent.enabled" = "Activado";
+"settings.launchAgent.disabled" = "Desactivado";
+"settings.launchAgent.enable" = "Activar";
+"settings.launchAgent.disable" = "Desactivar";
+"settings.launchAgent.legend" = "El agente de inicio ejecuta DockerBridge al iniciar sesión.";
+"settings.launchAgent.enableTooltip" = "Abrir DockerBridge al iniciar sesión";
+"settings.launchAgent.disableTooltip" = "No abrir DockerBridge al iniciar sesión";
+"settings.launchAgent.enabledAccessibility" = "Agente activado";
+"settings.launchAgent.disabledAccessibility" = "Agente desactivado";
+"settings.alert.invalidTimeouts" = "Los valores de tiempo deben ser numéricos.";
+"settings.alert.unreadableScript" = "No se pudo leer el script connect.sh seleccionado.";
+"settings.alert.launchAgentUpdateFailed" = "No se pudo actualizar el agente de inicio: %@";
+
+"quit.title" = "¿Salir de %@?";
+"quit.button.quit" = "Salir";
+"quit.disableLaunchAgent" = "No abrir %@ al iniciar sesión";
+"quit.activeConnection.one" = "Hay 1 conexión activa. Al salir se va a cortar el túnel.";
+"quit.activeConnection.many" = "Hay %d conexiones activas. Al salir se van a cortar los túneles.";
+"quit.launchAgentConfigured" = "%@ está configurado para abrirse al iniciar sesión.";
+"quit.uninstallError.title" = "No se pudo desinstalar el agente de inicio";
+
+"help.title" = "Ayuda - %@";
+"help.overviewAlt" = "Diagrama de red de DockerBridge";
+"help.missingOverview" = "No se encontró overview.svg dentro del bundle de la aplicación.";
+
+"tunnel.error.scriptNotFound" = "No se encontró %@.";
+"tunnel.error.couldNotStart" = "No se pudo iniciar: %@";
+"tunnel.error.askpass" = "No se pudo preparar SSH_ASKPASS: %@";
+"tunnel.error.processExited" = "El proceso terminó con código %d.";
