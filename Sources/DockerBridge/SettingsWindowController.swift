@@ -56,6 +56,7 @@ final class SettingsWindowController: NSWindowController {
 
         let root = NSStackView()
         root.orientation = .vertical
+        root.alignment = .width
         root.spacing = 12
         root.edgeInsets = NSEdgeInsets(top: 18, left: 18, bottom: 18, right: 18)
         root.translatesAutoresizingMaskIntoConstraints = false
@@ -146,6 +147,8 @@ final class SettingsWindowController: NSWindowController {
 
         let stack = NSStackView(views: views)
         stack.orientation = .horizontal
+        stack.alignment = .centerY
+        stack.distribution = .fill
         stack.spacing = 10
         return stack
     }
