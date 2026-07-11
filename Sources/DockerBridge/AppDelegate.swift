@@ -9,6 +9,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var connectionWindowController: ConnectionWindowController?
     private var settingsWindowController: SettingsWindowController?
     private var helpWindowController: HelpWindowController?
+    private var launchDecisionTask: Task<Void, Never>?
+    private var didFinishLaunching = false
+    private var initialLaunchHandled = false
+    private var backgroundLaunchRequested = false
+    private var backgroundLaunchRequiresRegisteredLoginItem = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         L10n.configure(languageCode: settingsStore.settings.languageCode)
@@ -53,14 +58,47 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         )
 
         if ProcessInfo.processInfo.arguments.contains("--background") {
-            startAutomaticConnections()
+            backgroundLaunchRequested = true
+            backgroundLaunchRequiresRegisteredLoginItem = false
+        }
+        didFinishLaunching = true
+
+        if backgroundLaunchRequested {
+            if backgroundLaunchRequiresRegisteredLoginItem {
+                scheduleInitialLaunch(after: .seconds(1))
+            } else {
+                handleInitialLaunch()
+            }
         } else {
-            showConnectionWindow()
+            scheduleInitialLaunch(after: .milliseconds(400))
+        }
+    }
+
+    func application(_ application: NSApplication, open urls: [URL]) {
+        let requestsBackgroundLaunch = urls.contains { url in
+            url.scheme == AppConstants.backgroundLaunchURLScheme && url.host == "background"
+        }
+        guard
+            requestsBackgroundLaunch,
+            !initialLaunchHandled
+        else {
+            return
+        }
+
+        backgroundLaunchRequested = true
+        backgroundLaunchRequiresRegisteredLoginItem = true
+        if didFinishLaunching {
+            scheduleInitialLaunch(after: .seconds(1))
         }
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        launchDecisionTask?.cancel()
         tunnelManager.stopAll()
+    }
+
+    func applicationDidBecomeActive(_ notification: Notification) {
+        settingsWindowController?.refreshLoginAgentState()
     }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
@@ -136,6 +174,36 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         store.connections
             .filter(\.autoStartOnLaunch)
             .forEach { tunnelManager.start($0) }
+    }
+
+    private func handleInitialLaunch() {
+        guard didFinishLaunching, !initialLaunchHandled else {
+            return
+        }
+
+        initialLaunchHandled = true
+        launchDecisionTask?.cancel()
+        launchDecisionTask = nil
+
+        let loginItemAuthorized = !backgroundLaunchRequiresRegisteredLoginItem
+            || LoginAgentManager.state == .enabled
+
+        if backgroundLaunchRequested, loginItemAuthorized {
+            startAutomaticConnections()
+        } else {
+            showConnectionWindow()
+        }
+    }
+
+    private func scheduleInitialLaunch(after delay: Duration) {
+        launchDecisionTask?.cancel()
+        launchDecisionTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: delay)
+            guard !Task.isCancelled else {
+                return
+            }
+            self?.handleInitialLaunch()
+        }
     }
 
     private func terminationMessage(launchAgentInstalled: Bool, activeConnectionCount: Int) -> String {

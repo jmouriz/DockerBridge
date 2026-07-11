@@ -16,6 +16,17 @@
     <string>DockerBridge</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>ar.tecnologica.dockerbridge.background-launch</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>ar-tecnologica-dockerbridge</string>
+            </array>
+        </dict>
+    </array>
     <key>CFBundleName</key>
     <string>DockerBridge</string>
     <key>CFBundleLocalizations</key>

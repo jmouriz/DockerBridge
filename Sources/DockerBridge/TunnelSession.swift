@@ -1,5 +1,5 @@
 import Foundation
-import Darwin
+import NIOSSH
 
 @MainActor
 final class TunnelSession {
@@ -11,9 +11,10 @@ final class TunnelSession {
 
     var onChange: (() -> Void)?
 
-    private var process: Process?
-    private var pipe: Pipe?
+    private var tunnel: NativeSSHTunnel?
+    private var lifecycleTask: Task<Void, Never>?
     private var logHandle: FileHandle?
+    private var stopRequested = false
 
     init(connection: BridgeConnection, settings: AppSettings) {
         self.connection = connection
@@ -22,132 +23,113 @@ final class TunnelSession {
     }
 
     func start() {
-        guard process?.isRunning != true else {
-            return
-        }
-
-        let connectScriptURL = settings.connectScriptURL
-        guard FileManager.default.isReadableFile(atPath: connectScriptURL.path) else {
-            state = .failed(L10n.trf("tunnel.error.scriptNotFound", connectScriptURL.path))
-            onChange?()
+        guard !state.isActive else {
             return
         }
 
         output = ""
+        stopRequested = false
         prepareLogFile()
 
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/bin/bash")
-        process.arguments = [connectScriptURL.path] + connection.scriptArguments()
-
-        var environment = ProcessInfo.processInfo.environment
-        environment["RUNNING_IN_BACKGROUND"] = "1"
-        environment["LOG_FILE"] = logURL.path
-        environment["SSH_CONNECT_TIMEOUT"] = String(settings.connectTimeoutSeconds)
-        environment["SSH_SERVER_ALIVE_INTERVAL"] = String(settings.serverAliveIntervalSeconds)
-        environment["SSH_SERVER_ALIVE_COUNT_MAX"] = String(settings.serverAliveCountMax)
-        configurePasswordEnvironment(&environment)
-        process.environment = environment
-
-        let pipe = Pipe()
-        self.pipe = pipe
-        process.standardOutput = pipe
-        process.standardError = pipe
-
-        pipe.fileHandleForReading.readabilityHandler = { [weak self] handle in
-            let data = handle.availableData
-            guard !data.isEmpty else {
-                return
-            }
-
-            Task { @MainActor [weak self] in
-                self?.receive(data: data)
-            }
+        let password: String?
+        do {
+            password = try PasswordStore.shared.password(for: connection.id)
+        } catch {
+            fail(error)
+            return
         }
 
-        process.terminationHandler = { [weak self] terminatedProcess in
-            let status = terminatedProcess.terminationStatus
-            Task { @MainActor [weak self] in
-                self?.finish(status: status)
-            }
+        let privateKey: NIOSSHPrivateKey?
+        do {
+            privateKey = password == nil ? try OpenSSHPrivateKeyLoader.loadDefaultKey() : nil
+        } catch {
+            fail(error)
+            return
         }
 
+        let tunnel = NativeSSHTunnel(
+            connection: connection,
+            settings: settings,
+            password: password,
+            privateKey: privateKey,
+            onLog: { [weak self] message in
+                Task { @MainActor [weak self] in
+                    self?.appendLog(message)
+                }
+            }
+        )
+        self.tunnel = tunnel
+
+        appendLog(
+            privateKey == nil
+                ? L10n.tr("tunnel.log.passwordAuthentication")
+                : L10n.tr("tunnel.log.privateKeyAuthentication")
+        )
         state = .starting(Date())
         onChange?()
 
-        do {
-            try process.run()
-            self.process = process
-        } catch {
-            closeLogFile()
-            self.process = nil
-            state = .failed(L10n.trf("tunnel.error.couldNotStart", error.localizedDescription))
-            onChange?()
+        lifecycleTask = Task { [weak self, tunnel] in
+            do {
+                let result = try await tunnel.start()
+                guard let self else {
+                    await tunnel.stop()
+                    return
+                }
+
+                guard !self.stopRequested else {
+                    await tunnel.stop()
+                    self.finishStopped()
+                    return
+                }
+
+                self.appendLog(
+                    L10n.trf("tunnel.log.started", result.containerIPAddress, self.connection.remotePort)
+                )
+                self.state = .running(Date())
+                self.onChange?()
+
+                try await tunnel.waitUntilClosed()
+                if self.stopRequested {
+                    self.finishStopped()
+                } else {
+                    await tunnel.stop()
+                    self.fail(NativeSSHTunnelError.commandFailed(
+                        status: -1,
+                        message: L10n.tr("tunnel.error.connectionClosed")
+                    ))
+                }
+            } catch {
+                guard let self else {
+                    return
+                }
+
+                if self.stopRequested || (error as? NativeSSHTunnelError) == .stopped {
+                    self.finishStopped()
+                } else {
+                    await tunnel.stop()
+                    self.fail(error)
+                }
+            }
         }
     }
 
     func stop() {
-        guard let process, process.isRunning else {
+        guard state.isActive else {
             state = .stopped
             onChange?()
             return
         }
 
+        stopRequested = true
         state = .stopping
+        appendLog(L10n.tr("tunnel.log.stopping"))
         onChange?()
 
-        let pid = process.processIdentifier
-        Darwin.kill(pid, SIGTERM)
-
-        Task { @MainActor [weak self] in
-            try? await Task.sleep(nanoseconds: 2_000_000_000)
-            guard
-                let self,
-                self.process?.processIdentifier == pid,
-                self.process?.isRunning == true
-            else {
-                return
-            }
-
-            Darwin.kill(pid, SIGKILL)
+        let tunnel = self.tunnel
+        Task { [weak self] in
+            await tunnel?.stop()
+            self?.finishStopped()
         }
-    }
-
-    private func receive(data: Data) {
-        logHandle?.write(data)
-
-        let text = String(decoding: data, as: UTF8.self)
-        output += text
-
-        if output.contains("Estableciendo puente") {
-            switch state {
-            case .running:
-                break
-            default:
-                state = .running(Date())
-            }
-        }
-
-        onChange?()
-    }
-
-    private func finish(status: Int32) {
-        pipe?.fileHandleForReading.readabilityHandler = nil
-        closeLogFile()
-        process = nil
-
-        switch state {
-        case .stopping:
-            state = .stopped
-        default:
-            if status == 0 {
-                state = .stopped
-            } else {
-                state = .failed(lastOutputSummary(fallbackStatus: status))
-            }
-        }
-
-        onChange?()
     }
 
     private func prepareLogFile() {
@@ -159,21 +141,34 @@ final class TunnelSession {
         logHandle = try? FileHandle(forWritingTo: logURL)
     }
 
-    private func configurePasswordEnvironment(_ environment: inout [String: String]) {
-        guard PasswordStore.shared.hasPassword(for: connection.id) else {
+    private func appendLog(_ message: String) {
+        let line = "[\(Self.timestamp.string(from: Date()))] \(message)\n"
+        output += line
+        logHandle?.write(Data(line.utf8))
+        onChange?()
+    }
+
+    private func fail(_ error: Error) {
+        let message = error.localizedDescription
+        appendLog(L10n.trf("tunnel.log.failed", message))
+        closeLogFile()
+        tunnel = nil
+        lifecycleTask = nil
+        state = .failed(message)
+        onChange?()
+    }
+
+    private func finishStopped() {
+        guard state != .stopped else {
             return
         }
 
-        do {
-            let askpassURL = try AskpassHelper.ensureInstalled()
-            environment["SSH_ASKPASS"] = askpassURL.path
-            environment["SSH_ASKPASS_REQUIRE"] = "force"
-            environment["DISPLAY"] = environment["DISPLAY"] ?? ":0"
-            environment["DOCKER_BRIDGE_KEYCHAIN_SERVICE"] = PasswordStore.shared.serviceName(for: connection.id)
-            environment["DOCKER_BRIDGE_KEYCHAIN_ACCOUNT"] = PasswordStore.shared.accountName()
-        } catch {
-            output += L10n.trf("tunnel.error.askpass", error.localizedDescription) + "\n"
-        }
+        appendLog(L10n.tr("tunnel.log.stopped"))
+        closeLogFile()
+        tunnel = nil
+        lifecycleTask = nil
+        state = .stopped
+        onChange?()
     }
 
     private func closeLogFile() {
@@ -181,18 +176,10 @@ final class TunnelSession {
         logHandle = nil
     }
 
-    private func lastOutputSummary(fallbackStatus: Int32) -> String {
-        let lines = output
-            .split(whereSeparator: \.isNewline)
-            .suffix(3)
-            .map(String.init)
-            .joined(separator: " / ")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-
-        if lines.isEmpty {
-            return L10n.trf("tunnel.error.processExited", fallbackStatus)
-        }
-
-        return lines
-    }
+    private static let timestamp: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return formatter
+    }()
 }

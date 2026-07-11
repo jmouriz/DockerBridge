@@ -2,7 +2,6 @@ import Foundation
 
 struct AppSettings: Codable, Equatable {
     var logDirectoryPath: String
-    var connectScriptPath: String
     var connectTimeoutSeconds: Int
     var serverAliveIntervalSeconds: Int
     var serverAliveCountMax: Int
@@ -10,14 +9,12 @@ struct AppSettings: Codable, Equatable {
 
     init(
         logDirectoryPath: String,
-        connectScriptPath: String,
         connectTimeoutSeconds: Int,
         serverAliveIntervalSeconds: Int,
         serverAliveCountMax: Int,
         languageCode: String = AppLanguage.system.rawValue
     ) {
         self.logDirectoryPath = logDirectoryPath
-        self.connectScriptPath = connectScriptPath
         self.connectTimeoutSeconds = connectTimeoutSeconds
         self.serverAliveIntervalSeconds = serverAliveIntervalSeconds
         self.serverAliveCountMax = serverAliveCountMax
@@ -28,7 +25,6 @@ struct AppSettings: Codable, Equatable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let defaults = AppSettings.defaults()
         logDirectoryPath = try container.decodeIfPresent(String.self, forKey: .logDirectoryPath) ?? defaults.logDirectoryPath
-        connectScriptPath = try container.decodeIfPresent(String.self, forKey: .connectScriptPath) ?? defaults.connectScriptPath
         connectTimeoutSeconds = try container.decodeIfPresent(Int.self, forKey: .connectTimeoutSeconds) ?? defaults.connectTimeoutSeconds
         serverAliveIntervalSeconds = try container.decodeIfPresent(Int.self, forKey: .serverAliveIntervalSeconds) ?? defaults.serverAliveIntervalSeconds
         serverAliveCountMax = try container.decodeIfPresent(Int.self, forKey: .serverAliveCountMax) ?? defaults.serverAliveCountMax
@@ -38,7 +34,6 @@ struct AppSettings: Codable, Equatable {
     static func defaults() -> AppSettings {
         AppSettings(
             logDirectoryPath: AppPaths.defaultLogDirectoryURL.path,
-            connectScriptPath: "",
             connectTimeoutSeconds: 15,
             serverAliveIntervalSeconds: 30,
             serverAliveCountMax: 3,
@@ -48,18 +43,6 @@ struct AppSettings: Codable, Equatable {
 
     var logDirectoryURL: URL {
         URL(fileURLWithPath: logDirectoryPath, isDirectory: true)
-    }
-
-    var connectScriptURL: URL {
-        let trimmed = connectScriptPath.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmed.isEmpty {
-            return AppPaths.bundledConnectScriptURL
-        }
-        return URL(fileURLWithPath: trimmed).standardizedFileURL
-    }
-
-    var effectiveConnectScriptPath: String {
-        connectScriptURL.path
     }
 
     var language: AppLanguage {
@@ -82,20 +65,6 @@ enum AppPaths {
         supportDirectoryURL.appendingPathComponent("Logs", isDirectory: true)
     }
 
-    static var helperDirectoryURL: URL {
-        supportDirectoryURL.appendingPathComponent("Helpers", isDirectory: true)
-    }
-
-    static var bundledConnectScriptURL: URL {
-        if let url = Bundle.main.url(forResource: "connect", withExtension: "sh") {
-            return url
-        }
-
-        return URL(
-            fileURLWithPath: "Resources/connect.sh",
-            relativeTo: URL(fileURLWithPath: FileManager.default.currentDirectoryPath, isDirectory: true)
-        ).standardizedFileURL
-    }
 }
 
 @MainActor
@@ -125,7 +94,11 @@ final class AppSettingsStore {
 
         do {
             let data = try Data(contentsOf: storageURL)
+            let storedValues = try JSONSerialization.jsonObject(with: data) as? [String: Any]
             settings = sanitized(try JSONDecoder().decode(AppSettings.self, from: data))
+            if storedValues?["connectScriptPath"] != nil {
+                save()
+            }
         } catch {
             settings = .defaults()
             save()
@@ -151,13 +124,6 @@ final class AppSettingsStore {
         copy.logDirectoryPath = copy.logDirectoryPath.trimmingCharacters(in: .whitespacesAndNewlines)
         if copy.logDirectoryPath.isEmpty {
             copy.logDirectoryPath = AppPaths.defaultLogDirectoryURL.path
-        }
-        copy.connectScriptPath = copy.connectScriptPath.trimmingCharacters(in: .whitespacesAndNewlines)
-        if copy.connectScriptPath == AppPaths.bundledConnectScriptURL.path {
-            copy.connectScriptPath = ""
-        }
-        if !copy.connectScriptPath.isEmpty {
-            copy.connectScriptPath = URL(fileURLWithPath: copy.connectScriptPath).standardizedFileURL.path
         }
         copy.connectTimeoutSeconds = clamp(copy.connectTimeoutSeconds, min: 3, max: 300)
         copy.serverAliveIntervalSeconds = clamp(copy.serverAliveIntervalSeconds, min: 0, max: 300)

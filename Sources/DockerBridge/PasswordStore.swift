@@ -44,6 +44,25 @@ final class PasswordStore {
         return SecItemCopyMatching(query as CFDictionary, nil) == errSecSuccess
     }
 
+    func password(for id: UUID) throws -> String? {
+        var query = baseQuery(for: id)
+        query[kSecReturnData as String] = true
+        query[kSecMatchLimit as String] = kSecMatchLimitOne
+
+        var result: CFTypeRef?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        if status == errSecItemNotFound {
+            return nil
+        }
+        guard status == errSecSuccess, let data = result as? Data else {
+            throw PasswordStoreError.keychain(status)
+        }
+        guard let password = String(data: data, encoding: .utf8) else {
+            throw PasswordStoreError.keychain(errSecDecode)
+        }
+        return password
+    }
+
     func serviceName(for id: UUID) -> String {
         "\(servicePrefix).\(id.uuidString)"
     }
@@ -58,24 +77,5 @@ final class PasswordStore {
             kSecAttrService as String: serviceName(for: id),
             kSecAttrAccount as String: account
         ]
-    }
-}
-
-enum AskpassHelper {
-    static func ensureInstalled() throws -> URL {
-        let url = AppPaths.helperDirectoryURL.appendingPathComponent("ssh-askpass.sh")
-        try FileManager.default.createDirectory(at: AppPaths.helperDirectoryURL, withIntermediateDirectories: true)
-
-        let script = """
-        #!/bin/sh
-        if [ -z "${DOCKER_BRIDGE_KEYCHAIN_SERVICE:-}" ]; then
-          exit 1
-        fi
-        exec /usr/bin/security find-generic-password -s "$DOCKER_BRIDGE_KEYCHAIN_SERVICE" -a "${DOCKER_BRIDGE_KEYCHAIN_ACCOUNT:-$USER}" -w
-        """
-
-        try script.write(to: url, atomically: true, encoding: .utf8)
-        try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: url.path)
-        return url
     }
 }

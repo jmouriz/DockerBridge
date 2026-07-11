@@ -5,7 +5,6 @@ final class SettingsWindowController: NSWindowController {
     private let settingsStore: AppSettingsStore
 
     private let logPathField = NSTextField()
-    private let connectScriptField = NSTextField()
     private let timeoutField = NSTextField()
     private let aliveIntervalField = NSTextField()
     private let aliveCountField = NSTextField()
@@ -15,8 +14,6 @@ final class SettingsWindowController: NSWindowController {
     private let agentLegendLabel = NSTextField(labelWithString: "")
     private let agentToggleButton = NSButton(title: "", target: nil, action: nil)
     private let chooseLogButton = NSButton(title: "", target: nil, action: nil)
-    private let chooseScriptButton = NSButton(title: "", target: nil, action: nil)
-    private let bundledScriptButton = NSButton(title: "", target: nil, action: nil)
     private let saveButton = NSButton(title: "", target: nil, action: nil)
     private var fieldLabels: [String: NSTextField] = [:]
 
@@ -24,13 +21,13 @@ final class SettingsWindowController: NSWindowController {
         self.settingsStore = settingsStore
 
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 760, height: 426),
+            contentRect: NSRect(x: 0, y: 0, width: 760, height: 388),
             styleMask: [.titled, .closable, .miniaturizable],
             backing: .buffered,
             defer: false
         )
         window.title = L10n.tr("settings.title")
-        window.minSize = NSSize(width: 760, height: 426)
+        window.minSize = NSSize(width: 760, height: 388)
 
         super.init(window: window)
         setupUI()
@@ -47,6 +44,10 @@ final class SettingsWindowController: NSWindowController {
         showWindow(nil)
         window?.center()
         NSApp.activate(ignoringOtherApps: true)
+    }
+
+    func refreshLoginAgentState() {
+        updateAgentControls()
     }
 
     private func setupUI() {
@@ -69,7 +70,11 @@ final class SettingsWindowController: NSWindowController {
             root.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
 
-        root.addArrangedSubview(row("settings.language", languagePopup))
+        let languageSpacer = NSView()
+        languageSpacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        languageSpacer.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        languagePopup.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        root.addArrangedSubview(row("settings.language", languagePopup, trailing: [languageSpacer]))
         languagePopup.target = self
         languagePopup.action = #selector(changeLanguage(_:))
 
@@ -77,20 +82,18 @@ final class SettingsWindowController: NSWindowController {
         chooseLogButton.target = self
         chooseLogButton.action = #selector(chooseLogDirectory(_:))
 
-        let scriptRow = row("settings.connectScript", connectScriptField, trailing: [chooseScriptButton, bundledScriptButton])
-        chooseScriptButton.target = self
-        chooseScriptButton.action = #selector(chooseConnectScript(_:))
-        bundledScriptButton.target = self
-        bundledScriptButton.action = #selector(useBundledConnectScript(_:))
-
         root.addArrangedSubview(logRow)
-        root.addArrangedSubview(scriptRow)
         root.addArrangedSubview(separator())
         root.addArrangedSubview(row("settings.timeout", timeoutField))
         root.addArrangedSubview(row("settings.keepAlive", aliveIntervalField))
         root.addArrangedSubview(row("settings.keepAliveAttempts", aliveCountField))
         root.addArrangedSubview(separator())
-        root.addArrangedSubview(agentRow())
+        let launchAgentRow = agentRow()
+        root.addArrangedSubview(launchAgentRow)
+        launchAgentRow.widthAnchor.constraint(
+            equalTo: root.widthAnchor,
+            constant: -(root.edgeInsets.left + root.edgeInsets.right)
+        ).isActive = true
         root.addArrangedSubview(separator())
 
         let actionRow = NSStackView(views: [NSView(), saveButton])
@@ -103,13 +106,11 @@ final class SettingsWindowController: NSWindowController {
         timeoutField.placeholderString = "15"
         aliveIntervalField.placeholderString = "30"
         aliveCountField.placeholderString = "3"
-        connectScriptField.placeholderString = AppPaths.bundledConnectScriptURL.path
     }
 
     private func populate() {
         let settings = settingsStore.settings
         logPathField.stringValue = settings.logDirectoryPath
-        connectScriptField.stringValue = settings.effectiveConnectScriptPath
         timeoutField.stringValue = String(settings.connectTimeoutSeconds)
         aliveIntervalField.stringValue = String(settings.serverAliveIntervalSeconds)
         aliveCountField.stringValue = String(settings.serverAliveCountMax)
@@ -124,8 +125,6 @@ final class SettingsWindowController: NSWindowController {
         }
 
         chooseLogButton.title = L10n.tr("common.choose")
-        chooseScriptButton.title = L10n.tr("common.choose")
-        bundledScriptButton.title = L10n.tr("settings.useBundledScript")
         saveButton.title = L10n.tr("common.save")
         languagePopup.toolTip = L10n.tr("settings.language.tooltip")
         agentLegendLabel.stringValue = L10n.tr("settings.launchAgent.legend")
@@ -168,7 +167,7 @@ final class SettingsWindowController: NSWindowController {
 
         agentToggleButton.target = self
         agentToggleButton.action = #selector(toggleAgent(_:))
-        agentToggleButton.widthAnchor.constraint(equalToConstant: 96).isActive = true
+        agentToggleButton.widthAnchor.constraint(equalToConstant: 120).isActive = true
 
         let spacer = NSView()
         spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
@@ -186,10 +185,14 @@ final class SettingsWindowController: NSWindowController {
         valueStack.orientation = .vertical
         valueStack.alignment = .leading
         valueStack.spacing = 4
+        valueStack.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        valueStack.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        statusRow.widthAnchor.constraint(equalTo: valueStack.widthAnchor).isActive = true
 
         let stack = NSStackView(views: [labelView, valueStack])
         stack.orientation = .horizontal
         stack.alignment = .firstBaseline
+        stack.distribution = .fill
         stack.spacing = 10
         return stack
     }
@@ -213,23 +216,6 @@ final class SettingsWindowController: NSWindowController {
         }
     }
 
-    @objc private func chooseConnectScript(_ sender: Any?) {
-        let panel = NSOpenPanel()
-        panel.canChooseFiles = true
-        panel.canChooseDirectories = false
-        panel.allowsMultipleSelection = false
-        panel.directoryURL = URL(fileURLWithPath: connectScriptField.stringValue).deletingLastPathComponent()
-        panel.nameFieldStringValue = "connect.sh"
-
-        if panel.runModal() == .OK, let url = panel.url {
-            connectScriptField.stringValue = url.path
-        }
-    }
-
-    @objc private func useBundledConnectScript(_ sender: Any?) {
-        connectScriptField.stringValue = AppPaths.bundledConnectScriptURL.path
-    }
-
     @objc private func save(_ sender: Any?) {
         guard
             let timeout = positiveInt(timeoutField.stringValue),
@@ -240,14 +226,9 @@ final class SettingsWindowController: NSWindowController {
             return
         }
 
-        guard let connectScriptPath = connectScriptPathToStore() else {
-            return
-        }
-
         settingsStore.update(
             AppSettings(
                 logDirectoryPath: logPathField.stringValue,
-                connectScriptPath: connectScriptPath,
                 connectTimeoutSeconds: timeout,
                 serverAliveIntervalSeconds: aliveInterval,
                 serverAliveCountMax: aliveCount,
@@ -255,23 +236,6 @@ final class SettingsWindowController: NSWindowController {
             )
         )
         close()
-    }
-
-    private func connectScriptPathToStore() -> String? {
-        let trimmed = connectScriptField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
-        let effectivePath = trimmed.isEmpty ? AppPaths.bundledConnectScriptURL.path : trimmed
-        let standardizedPath = URL(fileURLWithPath: effectivePath).standardizedFileURL.path
-
-        guard FileManager.default.isReadableFile(atPath: standardizedPath) else {
-            showAlert(message: L10n.tr("settings.alert.unreadableScript"))
-            return nil
-        }
-
-        if standardizedPath == AppPaths.bundledConnectScriptURL.path {
-            return ""
-        }
-
-        return standardizedPath
     }
 
     private func reloadLanguagePopupTitles() {
@@ -311,41 +275,85 @@ final class SettingsWindowController: NSWindowController {
 
     @objc private func toggleAgent(_ sender: Any?) {
         do {
-            if LoginAgentManager.isInstalled() {
+            switch LoginAgentManager.state {
+            case .enabled:
                 try LoginAgentManager.uninstall()
-            } else {
+            case .disabled:
                 try LoginAgentManager.install()
+            case .requiresApproval:
+                LoginAgentManager.openSystemSettings()
+            case .unavailable:
+                throw LoginAgentError.unavailable
             }
-            updateAgentControls()
+            refreshAgentControlsAfterChange()
         } catch {
             showAlert(message: L10n.trf("settings.alert.launchAgentUpdateFailed", error.localizedDescription))
         }
     }
 
-    private func updateAgentControls() {
-        let installed = LoginAgentManager.isInstalled()
-        agentStatusIcon.image = agentIcon(installed: installed)
-        agentStatusLabel.stringValue = installed
-            ? L10n.tr("settings.launchAgent.enabled")
-            : L10n.tr("settings.launchAgent.disabled")
-        agentStatusLabel.textColor = installed ? .labelColor : .secondaryLabelColor
-        agentToggleButton.title = installed
-            ? L10n.tr("settings.launchAgent.disable")
-            : L10n.tr("settings.launchAgent.enable")
-        agentToggleButton.toolTip = installed
-            ? L10n.tr("settings.launchAgent.disableTooltip")
-            : L10n.tr("settings.launchAgent.enableTooltip")
+    private func refreshAgentControlsAfterChange() {
+        updateAgentControls()
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .milliseconds(300))
+            self?.updateAgentControls()
+            try? await Task.sleep(for: .milliseconds(700))
+            self?.updateAgentControls()
+        }
     }
 
-    private func agentIcon(installed: Bool) -> NSImage {
+    private func updateAgentControls() {
+        let state = LoginAgentManager.state
+        agentStatusIcon.image = agentIcon(for: state)
+
+        switch state {
+        case .enabled:
+            agentStatusLabel.stringValue = L10n.tr("settings.launchAgent.enabled")
+            agentStatusLabel.textColor = .labelColor
+            agentToggleButton.title = L10n.tr("settings.launchAgent.disable")
+            agentToggleButton.toolTip = L10n.tr("settings.launchAgent.disableTooltip")
+            agentToggleButton.isEnabled = true
+        case .disabled:
+            agentStatusLabel.stringValue = L10n.tr("settings.launchAgent.disabled")
+            agentStatusLabel.textColor = .secondaryLabelColor
+            agentToggleButton.title = L10n.tr("settings.launchAgent.enable")
+            agentToggleButton.toolTip = L10n.tr("settings.launchAgent.enableTooltip")
+            agentToggleButton.isEnabled = true
+        case .requiresApproval:
+            agentStatusLabel.stringValue = L10n.tr("settings.launchAgent.requiresApproval")
+            agentStatusLabel.textColor = .labelColor
+            agentToggleButton.title = L10n.tr("settings.launchAgent.openSettings")
+            agentToggleButton.toolTip = L10n.tr("settings.launchAgent.openSettingsTooltip")
+            agentToggleButton.isEnabled = true
+        case .unavailable:
+            agentStatusLabel.stringValue = L10n.tr("settings.launchAgent.unavailable")
+            agentStatusLabel.textColor = .secondaryLabelColor
+            agentToggleButton.title = L10n.tr("settings.launchAgent.unavailable")
+            agentToggleButton.toolTip = L10n.tr("settings.launchAgent.unavailableTooltip")
+            agentToggleButton.isEnabled = false
+        }
+    }
+
+    private func agentIcon(for state: LoginAgentState) -> NSImage {
         let image = NSImage(size: NSSize(width: 16, height: 16))
         image.lockFocus()
 
-        (installed ? NSColor.systemGreen : NSColor.systemRed).setFill()
+        switch state {
+        case .enabled:
+            NSColor.systemGreen.setFill()
+        case .disabled:
+            NSColor.systemRed.setFill()
+        case .requiresApproval:
+            NSColor.systemYellow.setFill()
+        case .unavailable:
+            NSColor.systemGray.setFill()
+        }
         NSBezierPath(ovalIn: NSRect(x: 1, y: 1, width: 14, height: 14)).fill()
 
-        NSColor.white.setStroke()
-        if installed {
+        let glyphColor = state == .requiresApproval ? NSColor.darkGray : NSColor.white
+        glyphColor.setStroke()
+        glyphColor.setFill()
+        switch state {
+        case .enabled:
             let check = NSBezierPath()
             check.lineWidth = 2
             check.lineCapStyle = .round
@@ -354,20 +362,44 @@ final class SettingsWindowController: NSWindowController {
             check.line(to: NSPoint(x: 6.8, y: 5.6))
             check.line(to: NSPoint(x: 11.8, y: 10.4))
             check.stroke()
-        } else {
+        case .disabled:
             let line = NSBezierPath()
             line.lineWidth = 2
             line.lineCapStyle = .round
             line.move(to: NSPoint(x: 5, y: 8))
             line.line(to: NSPoint(x: 11, y: 8))
             line.stroke()
+        case .requiresApproval:
+            let mark = NSBezierPath()
+            mark.lineWidth = 2
+            mark.lineCapStyle = .round
+            mark.move(to: NSPoint(x: 8, y: 8))
+            mark.line(to: NSPoint(x: 8, y: 11.2))
+            mark.stroke()
+            NSBezierPath(ovalIn: NSRect(x: 7.1, y: 4.4, width: 1.8, height: 1.8)).fill()
+        case .unavailable:
+            let cross = NSBezierPath()
+            cross.lineWidth = 2
+            cross.lineCapStyle = .round
+            cross.move(to: NSPoint(x: 5.2, y: 5.2))
+            cross.line(to: NSPoint(x: 10.8, y: 10.8))
+            cross.move(to: NSPoint(x: 10.8, y: 5.2))
+            cross.line(to: NSPoint(x: 5.2, y: 10.8))
+            cross.stroke()
         }
 
         image.unlockFocus()
         image.isTemplate = false
-        image.accessibilityDescription = installed
-            ? L10n.tr("settings.launchAgent.enabledAccessibility")
-            : L10n.tr("settings.launchAgent.disabledAccessibility")
+        switch state {
+        case .enabled:
+            image.accessibilityDescription = L10n.tr("settings.launchAgent.enabledAccessibility")
+        case .disabled:
+            image.accessibilityDescription = L10n.tr("settings.launchAgent.disabledAccessibility")
+        case .requiresApproval:
+            image.accessibilityDescription = L10n.tr("settings.launchAgent.requiresApprovalAccessibility")
+        case .unavailable:
+            image.accessibilityDescription = L10n.tr("settings.launchAgent.unavailableAccessibility")
+        }
         return image
     }
 

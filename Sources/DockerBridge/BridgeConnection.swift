@@ -109,16 +109,4 @@ struct BridgeConnection: Codable, Identifiable, Equatable {
         "\(localEndpoint) -> \(sshEndpoint)/\(container)"
     }
 
-    func scriptArguments() -> [String] {
-        [
-            "-u", sshUser,
-            "-H", host.lowercased(),
-            "-P", String(sshPort),
-            "-p", String(remotePort),
-            "-c", container,
-            "-n", network,
-            "-b", bindAddress,
-            "-l", String(localPort)
-        ]
-    }
 }

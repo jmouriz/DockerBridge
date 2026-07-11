@@ -268,7 +268,7 @@ final class ConnectionWindowController: NSWindowController, NSTableViewDataSourc
     private func configureFieldPlaceholders() {
         nameField.placeholderString = "Example Tunnel"
         sshUserField.placeholderString = "ssh-user"
-        passwordField.placeholderString = L10n.tr("connection.password.placeholder.certificate")
+        passwordField.placeholderString = L10n.tr("connection.password.placeholder.privateKey")
         hostField.placeholderString = "server.example.com"
         sshPortField.placeholderString = "22"
         containerField.placeholderString = "app-container"
@@ -284,7 +284,7 @@ final class ConnectionWindowController: NSWindowController, NSTableViewDataSourc
         passwordField.stringValue = ""
         passwordField.placeholderString = PasswordStore.shared.hasPassword(for: connection.id)
             ? L10n.tr("connection.password.placeholder.saved")
-            : L10n.tr("connection.password.placeholder.certificate")
+            : L10n.tr("connection.password.placeholder.privateKey")
         hostField.stringValue = connection.host.lowercased()
         sshPortField.stringValue = String(connection.sshPort)
         remotePortField.stringValue = String(connection.remotePort)
@@ -430,7 +430,6 @@ final class ConnectionWindowController: NSWindowController, NSTableViewDataSourc
     private func persistPassword(for connection: BridgeConnection) {
         let password = passwordField.stringValue
         if password.isEmpty {
-            PasswordStore.shared.delete(for: connection.id)
             return
         }
 
