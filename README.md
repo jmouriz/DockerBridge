@@ -51,8 +51,10 @@ By default, connection logs are written to:
 ```
 
 Each profile stores the SSH user, host, SSH port, Docker container, Docker
-network, remote port, local IP, and local port. The log location, `connect.sh`
-path, SSH timeouts, and UI language can be changed from `Settings...`.
+network, remote port, local IP, local port, and whether the tunnel should start
+automatically when DockerBridge is opened by the login agent. The log location,
+`connect.sh` path, SSH timeouts, and UI language can be changed from
+`Settings...`.
 
 If no custom `connect.sh` path is configured, DockerBridge uses the helper
 included in the application bundle. If the SSH password field is left empty,

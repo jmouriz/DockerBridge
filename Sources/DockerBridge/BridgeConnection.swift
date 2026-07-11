@@ -11,6 +11,7 @@ struct BridgeConnection: Codable, Identifiable, Equatable {
     var network: String
     var bindAddress: String
     var localPort: Int
+    var autoStartOnLaunch: Bool
     var createdAt: Date
     var updatedAt: Date
 
@@ -25,6 +26,7 @@ struct BridgeConnection: Codable, Identifiable, Equatable {
         network: String,
         bindAddress: String,
         localPort: Int,
+        autoStartOnLaunch: Bool = false,
         createdAt: Date = Date(),
         updatedAt: Date = Date()
     ) {
@@ -38,6 +40,7 @@ struct BridgeConnection: Codable, Identifiable, Equatable {
         self.network = network
         self.bindAddress = bindAddress
         self.localPort = localPort
+        self.autoStartOnLaunch = autoStartOnLaunch
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
@@ -53,6 +56,7 @@ struct BridgeConnection: Codable, Identifiable, Equatable {
         case network
         case bindAddress
         case localPort
+        case autoStartOnLaunch
         case createdAt
         case updatedAt
     }
@@ -70,6 +74,7 @@ struct BridgeConnection: Codable, Identifiable, Equatable {
         network = try container.decodeIfPresent(String.self, forKey: .network) ?? ""
         bindAddress = try container.decodeIfPresent(String.self, forKey: .bindAddress) ?? "127.0.0.1"
         localPort = try container.decodeIfPresent(Int.self, forKey: .localPort) ?? 15432
+        autoStartOnLaunch = try container.decodeIfPresent(Bool.self, forKey: .autoStartOnLaunch) ?? false
         createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? now
         updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? createdAt
     }

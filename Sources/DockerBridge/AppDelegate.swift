@@ -52,7 +52,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         )
 
-        if !ProcessInfo.processInfo.arguments.contains("--background") {
+        if ProcessInfo.processInfo.arguments.contains("--background") {
+            startAutomaticConnections()
+        } else {
             showConnectionWindow()
         }
     }
@@ -128,6 +130,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func showHelpWindow() {
         let controller = helpController()
         controller.showAndFocus()
+    }
+
+    private func startAutomaticConnections() {
+        store.connections
+            .filter(\.autoStartOnLaunch)
+            .forEach { tunnelManager.start($0) }
     }
 
     private func terminationMessage(launchAgentInstalled: Bool, activeConnectionCount: Int) -> String {

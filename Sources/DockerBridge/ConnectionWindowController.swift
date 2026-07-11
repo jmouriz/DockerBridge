@@ -19,6 +19,7 @@ final class ConnectionWindowController: NSWindowController, NSTableViewDataSourc
     private let networkField = NSTextField()
     private let bindAddressField = NSTextField()
     private let localPortField = NSTextField()
+    private let autoStartButton = NSButton(checkboxWithTitle: "", target: nil, action: nil)
 
     private let newButton = NSButton(title: "", target: nil, action: nil)
     private let saveButton = NSButton(title: "", target: nil, action: nil)
@@ -96,6 +97,7 @@ final class ConnectionWindowController: NSWindowController, NSTableViewDataSourc
         saveButton.title = L10n.tr("common.save")
         deleteButton.title = L10n.tr("connection.button.delete")
         openLogButton.title = L10n.tr("connection.button.openLog")
+        autoStartButton.title = L10n.tr("connection.form.autoStart.checkbox")
 
         configureFieldPlaceholders()
         updateStatusLabels()
@@ -183,6 +185,7 @@ final class ConnectionWindowController: NSWindowController, NSTableViewDataSourc
         form.addArrangedSubview(row("connection.form.remotePort", remotePortField))
         form.addArrangedSubview(row("connection.form.localIP", bindAddressField))
         form.addArrangedSubview(row("connection.form.localPort", localPortField))
+        form.addArrangedSubview(checkboxRow("connection.form.autoStart", autoStartButton))
         form.addArrangedSubview(separator())
         form.addArrangedSubview(actionRow())
 
@@ -219,6 +222,22 @@ final class ConnectionWindowController: NSWindowController, NSTableViewDataSourc
 
         let stack = NSStackView(views: [labelView, field])
         stack.orientation = .horizontal
+        stack.alignment = .centerY
+        stack.spacing = 10
+        return stack
+    }
+
+    private func checkboxRow(_ labelKey: String, _ checkbox: NSButton) -> NSView {
+        let labelView = NSTextField(labelWithString: L10n.tr(labelKey))
+        labelView.alignment = .right
+        labelView.widthAnchor.constraint(equalToConstant: 110).isActive = true
+        formLabels[labelKey] = labelView
+
+        checkbox.title = L10n.tr("connection.form.autoStart.checkbox")
+
+        let stack = NSStackView(views: [labelView, checkbox])
+        stack.orientation = .horizontal
+        stack.alignment = .centerY
         stack.spacing = 10
         return stack
     }
@@ -263,6 +282,7 @@ final class ConnectionWindowController: NSWindowController, NSTableViewDataSourc
         networkField.stringValue = connection.network
         bindAddressField.stringValue = connection.bindAddress
         localPortField.stringValue = String(connection.localPort)
+        autoStartButton.state = connection.autoStartOnLaunch ? .on : .off
         updateStatusLabels()
         updateButtons()
     }
@@ -392,6 +412,7 @@ final class ConnectionWindowController: NSWindowController, NSTableViewDataSourc
             network: trimmedNetwork,
             bindAddress: trimmedBind.isEmpty ? "127.0.0.1" : trimmedBind,
             localPort: localPort,
+            autoStartOnLaunch: autoStartButton.state == .on,
             createdAt: store.connection(id: id)?.createdAt ?? Date()
         )
     }

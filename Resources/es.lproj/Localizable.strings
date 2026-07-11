@@ -36,6 +36,8 @@
 "connection.form.remotePort" = "Puerto remoto";
 "connection.form.localIP" = "IP local";
 "connection.form.localPort" = "Puerto local";
+"connection.form.autoStart" = "Inicio automático";
+"connection.form.autoStart.checkbox" = "Conectar al iniciar sesión";
 "connection.button.new" = "Nueva";
 "connection.button.delete" = "Eliminar";
 "connection.button.start" = "Iniciar";
