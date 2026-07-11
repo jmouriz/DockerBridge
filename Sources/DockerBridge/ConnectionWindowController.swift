@@ -20,6 +20,7 @@ final class ConnectionWindowController: NSWindowController, NSTableViewDataSourc
     private let bindAddressField = NSTextField()
     private let localPortField = NSTextField()
     private let autoStartButton = NSButton(checkboxWithTitle: "", target: nil, action: nil)
+    private let autoStartControlView = NSView()
 
     private let newButton = NSButton(title: "", target: nil, action: nil)
     private let saveButton = NSButton(title: "", target: nil, action: nil)
@@ -185,7 +186,8 @@ final class ConnectionWindowController: NSWindowController, NSTableViewDataSourc
         form.addArrangedSubview(row("connection.form.remotePort", remotePortField))
         form.addArrangedSubview(row("connection.form.localIP", bindAddressField))
         form.addArrangedSubview(row("connection.form.localPort", localPortField))
-        form.addArrangedSubview(checkboxRow("connection.form.autoStart", autoStartButton))
+        form.addArrangedSubview(checkboxRow(autoStartButton))
+        autoStartControlView.widthAnchor.constraint(equalTo: localPortField.widthAnchor).isActive = true
         form.addArrangedSubview(separator())
         form.addArrangedSubview(actionRow())
 
@@ -227,15 +229,23 @@ final class ConnectionWindowController: NSWindowController, NSTableViewDataSourc
         return stack
     }
 
-    private func checkboxRow(_ labelKey: String, _ checkbox: NSButton) -> NSView {
-        let labelView = NSTextField(labelWithString: L10n.tr(labelKey))
-        labelView.alignment = .right
-        labelView.widthAnchor.constraint(equalToConstant: 110).isActive = true
-        formLabels[labelKey] = labelView
+    private func checkboxRow(_ checkbox: NSButton) -> NSView {
+        let labelSpacer = NSView()
+        labelSpacer.widthAnchor.constraint(equalToConstant: 110).isActive = true
 
         checkbox.title = L10n.tr("connection.form.autoStart.checkbox")
 
-        let stack = NSStackView(views: [labelView, checkbox])
+        autoStartControlView.heightAnchor.constraint(equalToConstant: 26).isActive = true
+
+        checkbox.translatesAutoresizingMaskIntoConstraints = false
+        autoStartControlView.addSubview(checkbox)
+        NSLayoutConstraint.activate([
+            checkbox.leadingAnchor.constraint(equalTo: autoStartControlView.leadingAnchor),
+            checkbox.centerYAnchor.constraint(equalTo: autoStartControlView.centerYAnchor),
+            checkbox.trailingAnchor.constraint(lessThanOrEqualTo: autoStartControlView.trailingAnchor)
+        ])
+
+        let stack = NSStackView(views: [labelSpacer, autoStartControlView])
         stack.orientation = .horizontal
         stack.alignment = .centerY
         stack.spacing = 10

@@ -29,14 +29,13 @@
 "connection.form.name" = "Nombre";
 "connection.form.sshUser" = "Usuario SSH";
 "connection.form.password" = "Contraseña SSH";
-"connection.form.host" = "host SSH";
+"connection.form.host" = "Host SSH";
 "connection.form.sshPort" = "Puerto SSH";
 "connection.form.container" = "Contenedor";
 "connection.form.network" = "Red Docker";
 "connection.form.remotePort" = "Puerto remoto";
 "connection.form.localIP" = "IP local";
 "connection.form.localPort" = "Puerto local";
-"connection.form.autoStart" = "Inicio automático";
 "connection.form.autoStart.checkbox" = "Conectar al iniciar sesión";
 "connection.button.new" = "Nueva";
 "connection.button.delete" = "Eliminar";
