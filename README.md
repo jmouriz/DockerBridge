@@ -25,6 +25,30 @@ countries.
 
 ![DockerBridge network overview](overview.svg)
 
+## Screenshots
+
+All connections, hosts, users, and endpoints shown below are fictitious.
+
+### Connection Manager
+
+![DockerBridge connection manager](Screenshots/01-connection-manager.png)
+
+### New Connection
+
+![DockerBridge new connection form](Screenshots/02-new-connection.png)
+
+### Menu Bar
+
+<img src="Screenshots/03-menu-bar-menu.png" alt="DockerBridge menu bar menu" width="268">
+
+### Settings
+
+![DockerBridge settings](Screenshots/04-settings.png)
+
+### Help
+
+![DockerBridge help window](Screenshots/05-help-overview.png)
+
 ## How It Works
 
 1. DockerBridge connects to the configured SSH host and verifies its host key.
