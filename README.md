@@ -151,6 +151,23 @@ The installer image is:
 build/DockerBridge.dmg
 ```
 
+## Website
+
+The static product website lives in `Website/` and is published at
+[tecnologica.ar/docker-bridge](https://tecnologica.ar/docker-bridge/). It
+includes the localized product page, screenshots, DMG download, and privacy
+policy used for App Store Connect.
+
+Run it locally with:
+
+```bash
+python3 -m http.server 8765 --directory Website
+```
+
+The distributable DMG is copied to `Website/downloads/DockerBridge.dmg` for
+deployment but remains excluded from Git because GitHub Releases is the source
+of versioned binaries.
+
 ## Launch at Login
 
 DockerBridge can enable or disable its login item from the Settings window.

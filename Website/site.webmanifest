@@ -1,0 +1,21 @@
+{
+  "name": "DockerBridge",
+  "short_name": "DockerBridge",
+  "description": "Native macOS SSH tunnel manager for remote Docker services.",
+  "start_url": "/docker-bridge/",
+  "display": "browser",
+  "background_color": "#08111f",
+  "theme_color": "#08111f",
+  "icons": [
+    {
+      "src": "assets/images/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/images/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

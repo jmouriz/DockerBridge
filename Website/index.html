@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en" data-page="home">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DockerBridge is a native macOS menu bar app for managing SSH tunnels to services in remote Docker containers.">
+  <meta name="theme-color" content="#08111f">
+  <meta name="color-scheme" content="light dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DockerBridge">
+  <meta property="og:url" content="https://tecnologica.ar/docker-bridge/">
+  <meta property="og:title" content="DockerBridge — Native SSH tunnel manager for macOS">
+  <meta property="og:description" content="Publish remote Docker services on localhost through native, encrypted SSH tunnels.">
+  <meta property="og:image" content="https://tecnologica.ar/docker-bridge/assets/images/og-image.png">
+  <meta property="og:image:secure_url" content="https://tecnologica.ar/docker-bridge/assets/images/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="2240">
+  <meta property="og:image:height" content="1424">
+  <meta property="og:image:alt" content="DockerBridge network tunnel overview">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DockerBridge — Native SSH tunnel manager for macOS">
+  <meta name="twitter:description" content="Publish remote Docker services on localhost through native, encrypted SSH tunnels.">
+  <meta name="twitter:image" content="https://tecnologica.ar/docker-bridge/assets/images/og-image.png">
+  <link rel="canonical" href="https://tecnologica.ar/docker-bridge/">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="preload" as="image" href="assets/images/screenshots/05-help-overview.png">
+  <script src="assets/js/theme-init.js"></script>
+  <link rel="stylesheet" href="assets/css/site.css">
+  <title>DockerBridge — Native SSH tunnel manager for macOS</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "DockerBridge",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "macOS 13 or later",
+    "softwareVersion": "1.1.0",
+    "description": "Native macOS menu bar app for managing SSH tunnels to services in remote Docker containers.",
+    "url": "https://tecnologica.ar/docker-bridge/",
+    "downloadUrl": "https://tecnologica.ar/docker-bridge/downloads/DockerBridge.dmg",
+    "codeRepository": "https://github.com/jmouriz/DockerBridge",
+    "author": {
+      "@type": "Person",
+      "name": "Juan Manuel Mouriz"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content" data-i18n="common.skip">Skip to content</a>
+
+  <header class="site-header">
+    <nav class="nav-shell" aria-label="Primary navigation" data-i18n-aria-label="common.primaryNav">
+      <a class="brand-link" href="./" aria-label="DockerBridge home" data-i18n-aria-label="common.home">
+        <img src="assets/images/favicon.png" width="38" height="38" alt="">
+        <span>DockerBridge</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#how" data-i18n="nav.how">How it works</a>
+        <a href="#screenshots" data-i18n="nav.screenshots">Screenshots</a>
+        <a href="#install" data-i18n="nav.install">Install</a>
+        <a href="privacy/" data-i18n="nav.privacy">Privacy</a>
+      </div>
+
+      <div class="preferences">
+        <label class="select-control" data-i18n-title="preferences.languageTitle">
+          <img class="icon" src="assets/icons/languages.svg" alt="">
+          <span hidden data-i18n="preferences.language">Language</span>
+          <select id="language-select" data-i18n-aria-label="preferences.language">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="pt">Português</option>
+          </select>
+        </label>
+        <label class="select-control" data-i18n-title="preferences.themeTitle">
+          <img class="icon" src="assets/icons/sun.svg" alt="">
+          <span hidden data-i18n="preferences.theme">Theme</span>
+          <select id="theme-select" data-i18n-aria-label="preferences.theme">
+            <option value="system" data-i18n="theme.system">System</option>
+            <option value="light" data-i18n="theme.light">Light</option>
+            <option value="dark" data-i18n="theme.dark">Dark</option>
+          </select>
+        </label>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-content">
+        <img class="hero-icon" src="assets/images/app-icon.png" width="92" height="92" alt="DockerBridge application icon" data-i18n-alt="hero.iconAlt">
+        <p class="eyebrow" data-i18n="hero.eyebrow">Native macOS menu bar app</p>
+        <h1 id="hero-title">DockerBridge</h1>
+        <p class="hero-lead" data-i18n="hero.lead">Publish services from remote Docker containers on localhost through native, encrypted SSH tunnels.</p>
+
+        <div class="hero-actions">
+          <a class="button button-primary" href="downloads/DockerBridge.dmg" download>
+            <img class="icon" src="assets/icons/download.svg" alt="">
+            <span data-i18n="actions.download">Download DMG</span>
+          </a>
+          <a class="button button-hero-secondary" href="https://github.com/jmouriz/DockerBridge" target="_blank" rel="noopener noreferrer">
+            <img class="icon" src="assets/icons/github.svg" alt="">
+            <span data-i18n="actions.github">View on GitHub</span>
+          </a>
+          <button class="button button-disabled" type="button" disabled aria-disabled="true" data-i18n-title="actions.appStoreDisabled">
+            <img class="icon" src="assets/icons/store.svg" alt="">
+            <span data-i18n="actions.appStore">App Store</span>
+            <span class="button-badge" data-i18n="actions.comingSoon">Coming soon</span>
+          </button>
+        </div>
+
+        <p class="hero-meta">
+          <span data-i18n="hero.version">Version 1.1.0</span>
+          <span data-i18n="hero.requirement">macOS 13 or later</span>
+          <a href="https://github.com/jmouriz/DockerBridge/releases/tag/v1.1.0" target="_blank" rel="noopener noreferrer" data-i18n="hero.releaseNotes">Release notes</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="signal-band" aria-label="Product highlights" data-i18n-aria-label="signals.label">
+      <ul class="signal-list">
+        <li><img class="icon" src="assets/icons/monitor.svg" alt=""><span data-i18n="signals.native">Native Swift implementation</span></li>
+        <li><img class="icon" src="assets/icons/lock-keyhole.svg" alt=""><span data-i18n="signals.keychain">Passwords stay in Keychain</span></li>
+        <li><img class="icon" src="assets/icons/shield-check.svg" alt=""><span data-i18n="signals.telemetry">No analytics or telemetry</span></li>
+      </ul>
+    </section>
+
+    <section class="section" id="how">
+      <div class="section-inner">
+        <div class="section-heading">
+          <h2 data-i18n="how.title">A direct bridge to remote container services</h2>
+          <p data-i18n="how.lead">DockerBridge handles host verification, authentication, container discovery, local binding, and SSH forwarding from one native menu bar app.</p>
+        </div>
+
+        <div class="flow">
+          <article class="flow-step flow-step-local">
+            <span class="step-icon"><img class="icon" src="assets/icons/monitor.svg" alt=""></span>
+            <h3 data-i18n="how.localTitle">Local client</h3>
+            <p data-i18n="how.localBody">Connect pgAdmin, a browser, or any TCP client to the local IP and port you selected.</p>
+          </article>
+          <span class="flow-arrow" aria-hidden="true"><img class="icon" src="assets/icons/arrow-right.svg" alt=""></span>
+          <article class="flow-step flow-step-tunnel">
+            <span class="step-icon"><img class="icon" src="assets/icons/lock-keyhole.svg" alt=""></span>
+            <h3 data-i18n="how.tunnelTitle">Native SSH tunnel</h3>
+            <p data-i18n="how.tunnelBody">Traffic travels through SwiftNIO SSH. DockerBridge never launches a shell script or the system SSH client.</p>
+          </article>
+          <span class="flow-arrow" aria-hidden="true"><img class="icon" src="assets/icons/arrow-right.svg" alt=""></span>
+          <article class="flow-step flow-step-remote">
+            <span class="step-icon"><img class="icon" src="assets/icons/server.svg" alt=""></span>
+            <h3 data-i18n="how.remoteTitle">Remote container</h3>
+            <p data-i18n="how.remoteBody">The app discovers the container IP on the selected Docker network and forwards traffic to its service port.</p>
+          </article>
+        </div>
+
+        <p class="technical-note" data-i18n="how.disclaimer">DockerBridge is an SSH tunnel manager designed for administrators of remote containers. It is an independent project and is not affiliated with Docker, Inc.</p>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="install">
+      <div class="section-inner">
+        <div class="section-heading">
+          <h2 data-i18n="install.title">Install and connect</h2>
+          <p data-i18n="install.lead">The DMG contains the complete application. No shell helper or separate background package is required.</p>
+        </div>
+
+        <div class="install-layout">
+          <ol class="install-steps">
+            <li>
+              <strong data-i18n="install.step1Title">Download DockerBridge</strong>
+              <span data-i18n="install.step1Body">Open the DMG and drag DockerBridge into Applications.</span>
+            </li>
+            <li>
+              <strong data-i18n="install.step2Title">Create a connection</strong>
+              <span data-i18n="install.step2Body">Enter the SSH host, Docker container and network, service port, and local endpoint.</span>
+            </li>
+            <li>
+              <strong data-i18n="install.step3Title">Start the tunnel</strong>
+              <span data-i18n="install.step3Body">Use the menu bar to connect, monitor status, and stop tunnels at any time.</span>
+            </li>
+          </ol>
+
+          <aside class="requirements">
+            <h3 data-i18n="requirements.title">Requirements</h3>
+            <ul>
+              <li data-i18n="requirements.macos">macOS 13 or later</li>
+              <li data-i18n="requirements.ssh">SSH access to the remote host</li>
+              <li data-i18n="requirements.docker">Permission to run docker container inspect</li>
+              <li data-i18n="requirements.auth">Password authentication or an unencrypted ED25519 key</li>
+            </ul>
+            <p class="checksum">
+              <span data-i18n="requirements.checksum">DMG SHA-256</span>
+              <code>29712d85af9882b7ba6bccd7767fb0854b406e9459ba91a8a0b54664fa3165ce</code>
+            </p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="screenshots">
+      <div class="section-inner">
+        <div class="section-heading">
+          <h2 data-i18n="screenshots.title">A focused macOS experience</h2>
+          <p data-i18n="screenshots.lead">Manage saved tunnels in the main window and control active connections without leaving the menu bar.</p>
+        </div>
+
+        <div class="gallery-grid">
+          <figure class="gallery-item">
+            <button class="screenshot-button" type="button" data-screenshot-index="0" data-i18n-aria-label="screenshots.openManager">
+              <img src="assets/images/screenshots/01-connection-manager.png" alt="DockerBridge connection manager" loading="lazy" data-i18n-alt="screenshots.managerAlt">
+            </button>
+            <figcaption data-i18n="screenshots.manager">Connection manager</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <button class="screenshot-button" type="button" data-screenshot-index="1" data-i18n-aria-label="screenshots.openConnection">
+              <img src="assets/images/screenshots/02-new-connection.png" alt="DockerBridge new connection form" loading="lazy" data-i18n-alt="screenshots.connectionAlt">
+            </button>
+            <figcaption data-i18n="screenshots.connection">New connection</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <button class="screenshot-button" type="button" data-screenshot-index="2" data-i18n-aria-label="screenshots.openMenu">
+              <img src="assets/images/screenshots/03-menu-bar-menu.png" alt="DockerBridge menu bar menu" loading="lazy" data-i18n-alt="screenshots.menuAlt">
+            </button>
+            <figcaption data-i18n="screenshots.menu">Menu bar controls</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <button class="screenshot-button" type="button" data-screenshot-index="3" data-i18n-aria-label="screenshots.openSettings">
+              <img src="assets/images/screenshots/04-settings.png" alt="DockerBridge settings" loading="lazy" data-i18n-alt="screenshots.settingsAlt">
+            </button>
+            <figcaption data-i18n="screenshots.settings">Settings</figcaption>
+          </figure>
+          <figure class="gallery-item">
+            <button class="screenshot-button" type="button" data-screenshot-index="4" data-i18n-aria-label="screenshots.openHelp">
+              <img src="assets/images/screenshots/05-help-overview.png" alt="DockerBridge network help overview" loading="lazy" data-i18n-alt="screenshots.helpAlt">
+            </button>
+            <figcaption data-i18n="screenshots.help">Network overview</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="privacy-band">
+      <div class="privacy-callout">
+        <img class="icon" src="assets/icons/shield-check.svg" alt="">
+        <div>
+          <h2 data-i18n="privacyCallout.title">Your connections remain yours</h2>
+          <p data-i18n="privacyCallout.body">DockerBridge has no accounts, advertising, analytics, or telemetry. Connection data stays on your Mac.</p>
+        </div>
+        <a class="button button-hero-secondary" href="privacy/">
+          <span data-i18n="privacyCallout.action">Read the privacy policy</span>
+          <img class="icon" src="assets/icons/arrow-right.svg" alt="">
+        </a>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="section-inner">
+        <div class="section-heading">
+          <h2 data-i18n="faq.title">Frequently asked questions</h2>
+        </div>
+        <div class="faq-list">
+          <details>
+            <summary data-i18n="faq.shellQuestion">Does DockerBridge run shell scripts?</summary>
+            <p data-i18n="faq.shellAnswer">No. SSH transport, command execution, and TCP forwarding run inside the app with SwiftNIO and SwiftNIO SSH.</p>
+          </details>
+          <details>
+            <summary data-i18n="faq.passwordQuestion">Where are passwords stored?</summary>
+            <p data-i18n="faq.passwordAnswer">Passwords are stored in the macOS Keychain. Profiles and logs never contain the saved password.</p>
+          </details>
+          <details>
+            <summary data-i18n="faq.storeQuestion">Why is the App Store button disabled?</summary>
+            <p data-i18n="faq.storeAnswer">The App Store listing is still pending. The signed DMG and complete source code are available now.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p data-i18n="footer.disclaimer">DockerBridge is an independent project. Docker is a trademark of Docker, Inc. DockerBridge is not affiliated with, sponsored by, or endorsed by Docker, Inc.</p>
+      <nav class="footer-links" aria-label="Footer navigation" data-i18n-aria-label="footer.navigation">
+        <a href="privacy/" data-i18n="nav.privacy">Privacy</a>
+        <a href="https://github.com/jmouriz/DockerBridge" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://github.com/jmouriz/DockerBridge/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" data-i18n="footer.license">MIT License</a>
+        <span>© <span data-current-year>2026</span> Juan Manuel Mouriz</span>
+      </nav>
+    </div>
+  </footer>
+
+  <dialog class="lightbox" id="screenshot-dialog" data-i18n-aria-label="screenshots.dialogLabel">
+    <div class="lightbox-layout">
+      <button class="icon-button lightbox-close" type="button" data-lightbox-close data-i18n-title="screenshots.close">
+        <img class="icon" src="assets/icons/x.svg" alt="">
+      </button>
+      <button class="icon-button lightbox-nav" type="button" data-lightbox-previous data-i18n-title="screenshots.previous">
+        <img class="icon" src="assets/icons/chevron-left.svg" alt="">
+      </button>
+      <figure>
+        <img data-lightbox-image src="assets/images/screenshots/01-connection-manager.png" alt="">
+        <figcaption data-lightbox-caption></figcaption>
+      </figure>
+      <button class="icon-button lightbox-nav" type="button" data-lightbox-next data-i18n-title="screenshots.next">
+        <img class="icon" src="assets/icons/chevron-right.svg" alt="">
+      </button>
+    </div>
+  </dialog>
+
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/site.js"></script>
+</body>
+</html>
