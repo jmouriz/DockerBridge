@@ -1,6 +1,7 @@
 "language.system" = "Sistema";
 "language.english" = "Inglés";
 "language.spanish" = "Español";
+"language.portuguese" = "Portugués";
 
 "common.cancel" = "Cancelar";
 "common.save" = "Guardar";
@@ -19,6 +20,7 @@
 "menu.addConnection" = "Agregar conexión...";
 "menu.settings" = "Configuración...";
 "menu.help" = "Ayuda...";
+"menu.about" = "Acerca de DockerBridge...";
 "menu.stopAll" = "Detener todas";
 "menu.quit" = "Salir";
 "menu.tooltip.active.one" = "%@ - 1 conexión activa";
@@ -48,6 +50,7 @@
 "connection.status.format" = "Estado: %@";
 "connection.status.tooltip" = "Estado: %@";
 "connection.detail.unsaved" = "Guarda la conexión para dejarla disponible en la barra de menús.";
+"connection.defaultExampleName" = "Túnel de ejemplo";
 "connection.defaultNewName" = "Nueva conexión";
 "connection.alert.noLog" = "Todavía no hay log para esta conexión.";
 "connection.alert.nameRequired" = "El nombre es obligatorio.";
@@ -95,6 +98,16 @@
 "help.title" = "Ayuda - %@";
 "help.overviewAlt" = "Diagrama de red de DockerBridge";
 "help.missingOverview" = "No se encontró overview.svg dentro del bundle de la aplicación.";
+
+"about.title" = "Acerca de %@";
+"about.version" = "Versión %@ (%@)";
+"about.buildDate" = "Fecha de compilación: %@";
+"about.developer" = "Desarrollador: %@";
+"about.link.github" = "Repositorio en GitHub";
+"about.link.license" = "Licencia MIT";
+"about.link.thirdParty" = "Licencias de terceros";
+"about.disclaimer" = "Docker es una marca comercial de Docker, Inc. DockerBridge es un proyecto independiente y no está afiliado, patrocinado ni respaldado por Docker, Inc.";
+"about.unavailable" = "No disponible";
 
 "hostKey.new.title" = "Verificar host SSH";
 "hostKey.new.message" = "La identidad de %@ todavía no fue verificada.\n\nFingerprint: %@\n\nContinuá solamente si confiás en este servidor.";

@@ -81,7 +81,7 @@ struct BridgeConnection: Codable, Identifiable, Equatable {
 
     static func defaultConnection() -> BridgeConnection {
         BridgeConnection(
-            name: "Example Tunnel",
+            name: L10n.tr("connection.defaultExampleName"),
             sshUser: "ssh-user",
             host: "server.example.com",
             sshPort: 22,

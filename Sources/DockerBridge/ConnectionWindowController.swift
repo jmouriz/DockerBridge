@@ -327,6 +327,7 @@ final class ConnectionWindowController: NSWindowController, NSTableViewDataSourc
         tableView.deselectAll(nil)
         var connection = BridgeConnection.defaultConnection()
         connection.name = uniqueName(base: L10n.tr("connection.defaultNewName"))
+        connection.autoStartOnLaunch = LoginAgentManager.state == .enabled
         populateFields(with: connection)
         updateStatusLabels()
         updateButtons()

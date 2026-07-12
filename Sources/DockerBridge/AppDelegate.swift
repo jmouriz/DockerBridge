@@ -9,6 +9,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var connectionWindowController: ConnectionWindowController?
     private var settingsWindowController: SettingsWindowController?
     private var helpWindowController: HelpWindowController?
+    private var aboutWindowController: AboutWindowController?
     private var launchDecisionTask: Task<Void, Never>?
     private var didFinishLaunching = false
     private var initialLaunchHandled = false
@@ -37,6 +38,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self.connectionWindowController?.applyLocalization()
             self.settingsWindowController?.applyLocalization()
             self.helpWindowController?.applyLocalization()
+            self.aboutWindowController?.applyLocalization()
             self.statusBarController?.refresh()
         }
 
@@ -54,6 +56,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             },
             showHelp: { [weak self] in
                 self?.showHelpWindow()
+            },
+            showAbout: { [weak self] in
+                self?.showAboutWindow()
             }
         )
 
@@ -170,6 +175,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         controller.showAndFocus()
     }
 
+    private func showAboutWindow() {
+        let controller = aboutController()
+        controller.showAndFocus()
+    }
+
     private func startAutomaticConnections() {
         store.connections
             .filter(\.autoStartOnLaunch)
@@ -257,6 +267,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let controller = HelpWindowController()
         helpWindowController = controller
+        return controller
+    }
+
+    private func aboutController() -> AboutWindowController {
+        if let aboutWindowController {
+            return aboutWindowController
+        }
+
+        let controller = AboutWindowController()
+        aboutWindowController = controller
         return controller
     }
 }

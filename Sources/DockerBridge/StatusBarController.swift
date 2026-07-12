@@ -9,6 +9,7 @@ final class StatusBarController: NSObject {
     private let addConnection: () -> Void
     private let showSettings: () -> Void
     private let showHelp: () -> Void
+    private let showAbout: () -> Void
 
     init(
         store: ConnectionStore,
@@ -16,7 +17,8 @@ final class StatusBarController: NSObject {
         showManager: @escaping () -> Void,
         addConnection: @escaping () -> Void,
         showSettings: @escaping () -> Void,
-        showHelp: @escaping () -> Void
+        showHelp: @escaping () -> Void,
+        showAbout: @escaping () -> Void
     ) {
         self.store = store
         self.tunnelManager = tunnelManager
@@ -24,6 +26,7 @@ final class StatusBarController: NSObject {
         self.addConnection = addConnection
         self.showSettings = showSettings
         self.showHelp = showHelp
+        self.showAbout = showAbout
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         super.init()
         configureButton()
@@ -61,6 +64,7 @@ final class StatusBarController: NSObject {
         menu.addItem(menuItem(L10n.tr("menu.addConnection"), #selector(createConnection), symbolNames: ["plus.circle"]))
         menu.addItem(menuItem(L10n.tr("menu.settings"), #selector(openSettings), symbolNames: ["gearshape"]))
         menu.addItem(menuItem(L10n.tr("menu.help"), #selector(openHelp), symbolNames: ["questionmark.circle"]))
+        menu.addItem(menuItem(L10n.tr("menu.about"), #selector(openAbout), symbolNames: ["info.circle"]))
 
         let stopAllItem = menuItem(L10n.tr("menu.stopAll"), #selector(stopAllConnections), symbolNames: ["stop.circle"])
         stopAllItem.isEnabled = tunnelManager.activeCount() > 0
@@ -288,6 +292,10 @@ final class StatusBarController: NSObject {
 
     @objc private func openHelp() {
         showHelp()
+    }
+
+    @objc private func openAbout() {
+        showAbout()
     }
 
     @objc private func quit() {

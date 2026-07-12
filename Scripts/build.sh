@@ -50,6 +50,7 @@ cp "$ROOT_DIR/Resources/LoginItem-Info.plist" "$LOGIN_ITEM_APP_DIR/Contents/Info
 cp "$ROOT_DIR/Resources/PkgInfo" "$LOGIN_ITEM_APP_DIR/Contents/PkgInfo"
 
 cp "$ROOT_DIR/Resources/Info.plist" "$APP_DIR/Contents/Info.plist"
+/usr/libexec/PlistBuddy -c "Add :DockerBridgeBuildDate string $(date +%Y-%m-%d)" "$APP_DIR/Contents/Info.plist"
 cp "$ROOT_DIR/Resources/PkgInfo" "$APP_DIR/Contents/PkgInfo"
 cp "$ROOT_DIR/Resources/DockerBridge.icns" "$APP_DIR/Contents/Resources/DockerBridge.icns"
 cp "$ROOT_DIR/LICENSE" "$APP_DIR/Contents/Resources/DockerBridge-LICENSE.txt"

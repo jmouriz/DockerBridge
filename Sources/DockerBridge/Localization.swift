@@ -4,6 +4,7 @@ enum AppLanguage: String, CaseIterable, Codable {
     case system
     case english = "en"
     case spanish = "es"
+    case portuguese = "pt"
 
     static func normalized(_ rawValue: String) -> AppLanguage {
         AppLanguage(rawValue: rawValue) ?? .system
@@ -21,6 +22,8 @@ enum AppLanguage: String, CaseIterable, Codable {
             return L10n.tr("language.english")
         case .spanish:
             return L10n.tr("language.spanish")
+        case .portuguese:
+            return L10n.tr("language.portuguese")
         }
     }
 }
@@ -28,7 +31,7 @@ enum AppLanguage: String, CaseIterable, Codable {
 enum L10n {
     private static var language: AppLanguage = .system
     private static let fallbackLanguageCode = "en"
-    private static let supportedLanguageCodes = ["en", "es"]
+    private static let supportedLanguageCodes = ["en", "es", "pt"]
 
     static var activeLanguageCode: String {
         switch language {
@@ -36,6 +39,8 @@ enum L10n {
             return "en"
         case .spanish:
             return "es"
+        case .portuguese:
+            return "pt"
         case .system:
             return systemLanguageCode()
         }
@@ -63,12 +68,14 @@ enum L10n {
         let languageCodes = unique([activeLanguageCode, fallbackLanguageCode])
 
         for languageCode in languageCodes {
-            if let localizedURL = Bundle.main.url(
-                forResource: name,
-                withExtension: fileExtension,
-                subdirectory: nil,
-                localization: languageCode
-            ) {
+            guard let localizationPath = Bundle.main.path(forResource: languageCode, ofType: "lproj") else {
+                continue
+            }
+
+            let localizedURL = URL(fileURLWithPath: localizationPath, isDirectory: true)
+                .appendingPathComponent(name)
+                .appendingPathExtension(fileExtension)
+            if FileManager.default.fileExists(atPath: localizedURL.path) {
                 return localizedURL
             }
         }
@@ -93,6 +100,9 @@ enum L10n {
             let normalized = preferredLanguage.lowercased()
             if normalized.hasPrefix("es") {
                 return "es"
+            }
+            if normalized.hasPrefix("pt") {
+                return "pt"
             }
             if normalized.hasPrefix("en") {
                 return "en"

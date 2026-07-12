@@ -117,13 +117,13 @@ KeepAlive failures, and UI language can be changed from `Settings...`.
 
 ## Localization
 
-DockerBridge supports English and Spanish. English is the base and fallback
-language, while the default setting follows the macOS language. It can be
-changed from `Settings...`.
+DockerBridge supports English, Spanish, and Portuguese. English is the base and
+fallback language, while the default setting follows the macOS language. It can
+be changed from `Settings...`.
 
 Application strings live in `Resources/en.lproj/Localizable.strings` and
-`Resources/es.lproj/Localizable.strings`. The help diagram is localized as
-`overview.svg` inside each `.lproj` directory.
+the corresponding `es.lproj` and `pt.lproj` files. The help diagram is localized
+as `overview.svg` inside each `.lproj` directory.
 
 ## Build
 
